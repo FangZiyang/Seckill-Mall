@@ -1,6 +1,7 @@
 package com.miaoshaproject.controller;
 
 import com.miaoshaproject.controller.Viewobject.UserVO;
+import com.miaoshaproject.response.CommonReturnType;
 import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.impl.UserServiceImpl;
 import com.miaoshaproject.service.model.UserModel;
@@ -21,12 +22,14 @@ public class UserController {
 
     @RequestMapping("/get")
     @ResponseBody
-    public UserVO getUser(@RequestParam(name = "id") Integer id) {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) {
         // return user Info to front user by id
         UserModel userModel = userService.getUserById(id);
 
         //Convert core domain model user objects into UI-ready view objects.
-        return convertFromModel(userModel);
+        UserVO userVO = convertFromModel(userModel);
+
+        return CommonReturnType.create(userVO);
     }
 
     private UserVO convertFromModel(UserModel userModel) {
