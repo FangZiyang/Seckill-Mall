@@ -1,6 +1,8 @@
 package com.miaoshaproject.controller;
 
 import com.miaoshaproject.controller.Viewobject.UserVO;
+import com.miaoshaproject.error.BusinessException;
+import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.response.CommonReturnType;
 import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.impl.UserServiceImpl;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/user")
-public class UserController {
+public class UserController extends BaseController {
 
 
     @Autowired
@@ -22,9 +24,13 @@ public class UserController {
 
     @RequestMapping("/get")
     @ResponseBody
-    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) {
+    public CommonReturnType getUser(@RequestParam(name = "id") Integer id) throws BusinessException {
         // return user Info to front user by id
         UserModel userModel = userService.getUserById(id);
+
+        if (userModel == null) {
+            throw new BusinessException(EmBusinessError.USER_NOT_EXIST);
+        }
 
         //Convert core domain model user objects into UI-ready view objects.
         UserVO userVO = convertFromModel(userModel);
@@ -40,4 +46,6 @@ public class UserController {
         BeanUtils.copyProperties(userModel, userVO);
         return userVO;
     }
+
+
 }
