@@ -4,9 +4,9 @@ import com.miaoshaproject.controller.Viewobject.UserVO;
 import com.miaoshaproject.error.BusinessException;
 import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.response.CommonReturnType;
-import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.impl.UserServiceImpl;
 import com.miaoshaproject.service.model.UserModel;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -90,6 +90,7 @@ public class UserController extends BaseController {
                                      @RequestParam(name = "password") String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
         //验证手机号和对应的otpcode相符合
         String inSessionOtpCode = (String) this.httpServletRequest.getSession().getAttribute(telphone);
+        //TODO:  I can not get optcode from session
         if (!com.alibaba.druid.util.StringUtils.equals(otpCode, inSessionOtpCode)) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "短信验证码不符合");
         }
@@ -111,6 +112,27 @@ public class UserController extends BaseController {
         BASE64Encoder base64en = new BASE64Encoder();
         //加密字符串
         return base64en.encode(md5.digest(str.getBytes(StandardCharsets.UTF_8)));
+    }
+
+
+    @RequestMapping(value = "/login",method = {RequestMethod.POST},consumes={CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name="telphone")String telphone,
+                                  @RequestParam(name="password")String password) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+
+        //check input
+        if(org.apache.commons.lang3.StringUtils.isEmpty(telphone)||
+                StringUtils.isEmpty(password)){
+            throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+
+        //用户登陆服务,用来校验用户登陆是否合法
+        UserModel userModel = userService.validateLogin(telphone,this.EncodeByMd5(password));
+        //将登陆凭证加入到用户登陆成功的session内
+        this.httpServletRequest.getSession().setAttribute("IS_LOGIN",true);
+        this.httpServletRequest.getSession().setAttribute("LOGIN_USER",userModel);
+
+        return CommonReturnType.create(null);
     }
 
 }
