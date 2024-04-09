@@ -14,12 +14,12 @@ public class ValidatorImpl implements InitializingBean {
 
     private Validator validator;
 
-    //实现校验方法并返回校验结果
+    //Implements the checksum method and returns the checksum result
     public ValidationResult validate(Object bean) {
         final ValidationResult result = new ValidationResult();
         Set<ConstraintViolation<Object>> constraintViolationSet = validator.validate(bean);
         if (!constraintViolationSet.isEmpty()) {
-            //有错误
+            //something is wrong
             result.setHasErrors(true);
             constraintViolationSet.forEach(constraintViolation -> {
                 String errMsg = constraintViolation.getMessage();

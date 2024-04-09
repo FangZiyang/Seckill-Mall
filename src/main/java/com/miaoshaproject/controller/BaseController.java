@@ -17,6 +17,7 @@ public class BaseController {
 
 
     //定义exceptionhandler解决未被controller层吸收的exception
+    //Define an exceptionhandler to resolve exceptions that are not absorbed by the controller layer.
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
