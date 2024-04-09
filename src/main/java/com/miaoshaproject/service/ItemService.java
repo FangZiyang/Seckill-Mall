@@ -11,7 +11,7 @@ public interface ItemService {
     ItemModel createItem(ItemModel itemModel) throws BusinessException;
 
     //Browse the list of items
-//    List<ItemModel> listItem();
+    List<ItemModel> listItem();
 
     //Browse item details
     ItemModel getItemById(Integer id);
