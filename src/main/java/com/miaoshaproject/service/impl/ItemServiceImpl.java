@@ -81,15 +81,26 @@ public class ItemServiceImpl implements ItemService {
     }
 
 
+    //    @Override
+//    public List<ItemModel> listItem() {
+//        List<ItemDO> itemDOList = itemDOMapper.listItem();
+//        List<ItemModel> itemModelList = new ArrayList<>();
+//
+//        for (ItemDO itemDO : itemDOList) {
+//            ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
+//            ItemModel itemModel = this.convertModelFromDataObject(itemDO, itemStockDO);
+//            itemModelList.add(itemModel);
+//        }
+//
+//        return itemModelList;
+//    }
     @Override
     public List<ItemModel> listItem() {
         List<ItemDO> itemDOList = itemDOMapper.listItem();
-        List<ItemModel> itemModelList = itemDOList.stream().map(itemDO -> {
+        return itemDOList.stream().map(itemDO -> {
             ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
-            ItemModel itemModel = this.convertModelFromDataObject(itemDO, itemStockDO);
-            return itemModel;
+            return this.convertModelFromDataObject(itemDO, itemStockDO);
         }).collect(Collectors.toList());
-        return itemModelList;
     }
 
     @Override
@@ -137,7 +148,7 @@ public class ItemServiceImpl implements ItemService {
     private ItemModel convertModelFromDataObject(ItemDO itemDO, ItemStockDO itemStockDO) {
         ItemModel itemModel = new ItemModel();
         BeanUtils.copyProperties(itemDO, itemModel);
-        itemModel.setPrice(new BigDecimal(itemDO.getPrice()));
+        itemModel.setPrice(BigDecimal.valueOf(itemDO.getPrice()));
         itemModel.setStock(itemStockDO.getStock());
 
         return itemModel;
