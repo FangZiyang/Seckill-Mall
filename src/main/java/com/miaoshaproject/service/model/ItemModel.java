@@ -36,5 +36,5 @@ public class ItemModel {
     private String imgUrl;
 
     //Use aggregation model, if promoModel is not null, then it means it has not yet ended the spike activity
-//    private PromoModel promoModel;
+    private PromoModel promoModel;
 }
