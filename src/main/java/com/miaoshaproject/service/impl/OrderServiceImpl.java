@@ -1,5 +1,8 @@
 package com.miaoshaproject.service.impl;
 
+import com.miaoshaproject.dao.SequenceDOMapper;
+import com.miaoshaproject.dataobject.OrderDO;
+import com.miaoshaproject.dataobject.SequenceDO;
 import com.miaoshaproject.error.EmBusinessError;
 import com.miaoshaproject.dao.OrderDOMapper;
 import com.miaoshaproject.error.BusinessException;
@@ -9,14 +12,18 @@ import com.miaoshaproject.service.UserService;
 import com.miaoshaproject.service.model.ItemModel;
 import com.miaoshaproject.service.model.OrderModel;
 import com.miaoshaproject.service.model.UserModel;
+import java.time.LocalDateTime;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.time.format.DateTimeFormatter;
 
 
 @Service
-
-
 public class OrderServiceImpl implements OrderService {
 
     @Autowired
@@ -95,7 +102,7 @@ public class OrderServiceImpl implements OrderService {
 
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private String generateOrderNo() {
+    public String generateOrderNo() {
         //The order number has 16 digits
         StringBuilder stringBuilder = new StringBuilder();
         //The first 8 digits are time information, year, month and day
@@ -117,7 +124,7 @@ public class OrderServiceImpl implements OrderService {
 
 
         //The last 2 bits are bank and table bits,
-        // TODO: temporarily method
+        // TODO: temporarily method，Staying with the future use of split libraries and split tables
         stringBuilder.append("00");
 
         return stringBuilder.toString();
