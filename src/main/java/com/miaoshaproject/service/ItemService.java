@@ -18,8 +18,8 @@ public interface ItemService {
 
 
     // Deduction of stock
-//    boolean decreaseStock(Integer itemId, Integer amount) throws BusinessException;
+    boolean decreaseStock(Integer itemId, Integer amount) throws BusinessException;
 
     //Increase sales of the item
-//    void increaseSales(Integer itemId, Integer amount) throws BusinessException;
+    void increaseSales(Integer itemId, Integer amount) throws BusinessException;
 }

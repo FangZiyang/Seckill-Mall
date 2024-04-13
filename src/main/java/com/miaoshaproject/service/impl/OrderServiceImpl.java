@@ -43,9 +43,11 @@ public class OrderServiceImpl implements OrderService {
         }
 
         UserModel userModel = userService.getUserById(userId);
+
         if (userModel == null) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "User information does not exist");
         }
+
         if (amount <= 0 || amount > 99) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "Incorrect quantity information");
         }

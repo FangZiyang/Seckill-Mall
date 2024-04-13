@@ -29,8 +29,8 @@ public class ItemServiceImpl implements ItemService {
     @Autowired
     private ItemDOMapper itemDOMapper;
 
-//    @Autowired
-//    private PromoService promoService;
+    @Autowired
+    private PromoService promoService;
 
     @Autowired
     private ItemStockDOMapper itemStockDOMapper;
