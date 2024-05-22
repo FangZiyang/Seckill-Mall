@@ -11,7 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import sun.misc.BASE64Encoder;
+
+import java.util.Base64;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
@@ -96,24 +97,29 @@ public class UserController extends BaseController {
         if (!com.alibaba.druid.util.StringUtils.equals(otpCode, inSessionOtpCode)) {
             throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "SMS CAPTCHA does not match");
         }
-        //The process of user resgistration
+        //The process of user registration
         UserModel userModel = new UserModel();
         userModel.setName(name);
-        userModel.setGender(new Byte(String.valueOf(gender.intValue())));
+        userModel.setGender(gender.byteValue());
         userModel.setAge(age);
         userModel.setTelphone(telphone);
         userModel.setRegisterMode("byphone");
-        userModel.setEncrptPassword(this.EncodeByMd5(password));
+        // Encrypt password before setting it
+        String encryptedPassword = encodeByMd5(password);
+        userModel.setEncrptPassword(encryptedPassword);
         userService.register(userModel);
         return CommonReturnType.create(null);
     }
 
-    private String EncodeByMd5(String str) throws NoSuchAlgorithmException, UnsupportedEncodingException, NoSuchAlgorithmException {
-        //Determination of calculation methods
+    private String encodeByMd5(String str) throws NoSuchAlgorithmException {
+        // Determination of calculation methods
         MessageDigest md5 = MessageDigest.getInstance("MD5");
-        BASE64Encoder base64en = new BASE64Encoder();
-        //encrypted string
-        return base64en.encode(md5.digest(str.getBytes(StandardCharsets.UTF_8)));
+        // Perform MD5 hash
+        byte[] hashedBytes = md5.digest(str.getBytes(StandardCharsets.UTF_8));
+        // Encode hashed bytes to Base64
+        String base64Encoded = Base64.getEncoder().encodeToString(hashedBytes);
+        // Encrypted string
+        return base64Encoded;
     }
 
 
@@ -129,7 +135,8 @@ public class UserController extends BaseController {
         }
 
         //User login service, used to verify the legitimacy of the user login.
-        UserModel userModel = userService.validateLogin(telphone, this.EncodeByMd5(password));
+        String encryptedPassword = encodeByMd5(password);
+        UserModel userModel = userService.validateLogin(telphone, encryptedPassword);
         //Add login credentials to the session where the user logged in successfully
         this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
         this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
