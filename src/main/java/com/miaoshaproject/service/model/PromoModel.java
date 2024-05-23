@@ -10,7 +10,10 @@ public class PromoModel {
 
     private Integer id;
 
-    //Seconds Activity Status 1 means not started yet, 2 means in progress, 3 means finished
+    //Seconds Activity Status:
+    // 1 means not started yet,
+    // 2 means in progress,
+    // 3 means finished
     private Integer status;
 
     //promotion name

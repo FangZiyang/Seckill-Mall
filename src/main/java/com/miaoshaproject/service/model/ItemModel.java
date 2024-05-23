@@ -1,6 +1,8 @@
 package com.miaoshaproject.service.model;
 
+
 import lombok.Data;
+
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;

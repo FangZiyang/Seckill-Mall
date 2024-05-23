@@ -120,7 +120,7 @@ public class ItemServiceImpl implements ItemService {
 
         //Getting information about active products
         PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
-        if (promoModel != null && promoModel.getStatus().intValue() != 3) {
+        if (promoModel != null && promoModel.getStatus() != 3) {
             itemModel.setPromoModel(promoModel);
         }
 
