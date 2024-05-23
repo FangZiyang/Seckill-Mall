@@ -65,7 +65,7 @@ public class OrderServiceImpl implements OrderService {
             if (promoId.intValue() != itemModel.getPromoModel().getId()) {
                 throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "Incorrect activity information");
                 //(2) Whether calibration activities are ongoing
-            } else if (itemModel.getPromoModel().getStatus().intValue() != 2) {
+            } else if (itemModel.getPromoModel().getStatus() != 2) {
                 throw new BusinessException(EmBusinessError.PARAMETER_VALIDATION_ERROR, "Event information is not yet available");
             }
         }
