@@ -27,7 +27,7 @@ public class OrderController {
     @Autowired
     private HttpServletRequest httpServletRequest;
 
-    //封装下单请求
+    //Encapsulation of order requests
     @RequestMapping(value = "/createorder", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
     @ResponseBody
     public CommonReturnType createOrder(@RequestParam(name = "itemId") Integer itemId,
