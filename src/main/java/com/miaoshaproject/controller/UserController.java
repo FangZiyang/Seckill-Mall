@@ -10,6 +10,7 @@ import com.miaoshaproject.service.model.UserModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,8 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("/user")
@@ -33,6 +36,10 @@ public class UserController extends BaseController {
 
     @Autowired
     HttpServletRequest httpServletRequest;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
 
     @RequestMapping("/get")
     @ResponseBody
@@ -138,11 +145,20 @@ public class UserController extends BaseController {
         //User login service, used to verify the legitimacy of the user login.
         String encryptedPassword = encodeByMd5(password);
         UserModel userModel = userService.validateLogin(telphone, encryptedPassword);
+
+        String uuidToken = UUID.randomUUID().toString();
+        uuidToken = uuidToken.replace("-", "");
+
+
+        //Establishing the link between the token and the user's login state
+        redisTemplate.opsForValue().set(uuidToken, userModel);
+        redisTemplate.expire(uuidToken, 1, TimeUnit.HOURS);
+
         //Add login credentials to the session where the user logged in successfully
         this.httpServletRequest.getSession().setAttribute("IS_LOGIN", true);
         this.httpServletRequest.getSession().setAttribute("LOGIN_USER", userModel);
 
-        return CommonReturnType.create(null);
+        return CommonReturnType.create(uuidToken);
     }
 
 }

@@ -4,11 +4,11 @@ package com.miaoshaproject.service.model;
 import lombok.Data;
 
 import javax.validation.constraints.*;
-
+import java.io.Serializable;
 
 
 @Data
-public class UserModel {
+public class UserModel implements Serializable {
     private Integer id;
     @NotBlank(message = "User name cannot be empty")
     private String name;

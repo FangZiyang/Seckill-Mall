@@ -39,7 +39,7 @@ public class OrderController {
             throw new BusinessException(EmBusinessError.USER_NOT_LOGIN, "用户还未登陆，不能下单");
         }
 
-        //获取用户的登陆信息
+        //Getting the user's login information
         UserModel userModel = (UserModel) httpServletRequest.getSession().getAttribute("LOGIN_USER");
 
         OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, promoId, amount);
