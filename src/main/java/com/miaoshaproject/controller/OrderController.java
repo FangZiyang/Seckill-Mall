@@ -8,6 +8,7 @@ import com.miaoshaproject.service.model.UserModel;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import com.miaoshaproject.error.EmBusinessError;
 
@@ -34,9 +35,11 @@ public class OrderController {
                                         @RequestParam(name = "amount") Integer amount,
                                         @RequestParam(name = "promoId", required = false) Integer promoId) throws BusinessException {
 
-        Boolean isLogin = (Boolean) httpServletRequest.getSession().getAttribute("IS_LOGIN");
-        if (isLogin == null || !isLogin) {
-            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN, "用户还未登陆，不能下单");
+//        Boolean isLogin = (Boolean) httpServletRequest.getSession().getAttribute("IS_LOGIN");
+
+        String token = httpServletRequest.getParameterMap().get("token")[0];
+        if (StringUtils.isEmpty(token)) {
+            throw new BusinessException(EmBusinessError.USER_NOT_LOGIN, "The user has not logged in and cannot place an order");
         }
 
         //Getting the user's login information
